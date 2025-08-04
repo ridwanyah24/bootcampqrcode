@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BootCamp Stuff",
+  title: "BootCamp Qrcode urls",
   description: "Developed by RidDev",
 };
 

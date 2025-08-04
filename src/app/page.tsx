@@ -1,3 +1,4 @@
+// Imports unchanged
 "use client";
 
 import ChildForm from "@/components/ChildrenForm";
@@ -8,10 +9,14 @@ import { useState } from "react";
 export default function Home() {
   const [parentName, setParentName] = useState("");
   const [parentPhone, setParentPhone] = useState("");
+  const [parentEmail, setParentEmail] = useState("");
+  const [parentAddress, setParentAddress] = useState("");
   const [parentImage, setParentImage] = useState<File | null>(null);
+  const [imageOfDad, setImageOfDad] = useState<File | null>(null);
 
   const [thirdPartyName, setThirdPartyName] = useState("");
   const [thirdPartyPhone, setThirdPartyPhone] = useState("");
+  const [thirdPartyRelationship, setThirdPartyRelationship] = useState("");
   const [thirdPartyImage, setThirdPartyImage] = useState<File | null>(null);
 
   const [loading, setLoading] = useState(false);
@@ -25,11 +30,10 @@ export default function Home() {
       schoolAttended: "",
       bootcampCourse: "",
       age: "",
+      gender: "",
+      allergies: "",
     },
   ]);
-
-  // const [qrUrl, setQrUrl] = useState("");
-  // const [viewLink, setViewLink] = useState("");
 
   const handleChildChange = (index: number, updated: Child) => {
     const newChildren = [...children];
@@ -51,6 +55,8 @@ export default function Home() {
         schoolAttended: "",
         bootcampCourse: "",
         age: "",
+        gender: "",
+        allergies: "",
       },
     ]);
   };
@@ -65,23 +71,27 @@ export default function Home() {
     const formData = new FormData();
     formData.append("name", parentName);
     formData.append("phoneNumber", parentPhone);
+    formData.append("email", parentEmail);
+    formData.append("address", parentAddress);
     if (parentImage) formData.append("image", parentImage);
+    if (imageOfDad) formData.append("imageOfDad", imageOfDad);
 
     formData.append("thirdpartyName", thirdPartyName);
     formData.append("thirdpartyPhoneNumber", thirdPartyPhone);
+    formData.append("thirdpartyRel", thirdPartyRelationship);
     if (thirdPartyImage) formData.append("thirdpartyImage", thirdPartyImage);
 
-    // Send children data as a single JSON string
     const childrenData = children.map((child) => ({
       name: child.name,
       class: child.class,
       schoolAttended: child.schoolAttended,
       bootcampCourse: child.bootcampCourse,
       age: child.age,
+      gender: child.gender,
+      allergies: child.allergies,
     }));
     formData.append("children", JSON.stringify(childrenData));
 
-    // Send all child images under the same key as an array
     children.forEach((child) => {
       if (child.image) {
         formData.append("childImages", child.image);
@@ -102,11 +112,6 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-
-    for (const pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
-
   };
 
   return (
@@ -118,28 +123,14 @@ export default function Home() {
         <section>
           <h2 className="text-xl font-semibold mb-2 text-gray-800">Parent Info</h2>
           <div className="space-y-3">
-            <input
-              type="text"
-              placeholder="Parent Full Name"
-              className="w-full p-2 border rounded"
-              value={parentName}
-              onChange={(e) => setParentName(e.target.value)}
-              required
-            />
-            <input
-              type="tel"
-              placeholder="Parent Phone"
-              className="w-full p-2 border rounded"
-              value={parentPhone}
-              onChange={(e) => setParentPhone(e.target.value)}
-              required
-            />
-            <input
-              type="file"
-              className="w-full p-2 border rounded bg-white"
-              onChange={(e) => setParentImage(e.target.files?.[0] || null)}
-              accept="image/*"
-            />
+            <input type="text" placeholder="Parent Full Name" className="w-full p-2 border rounded" value={parentName} onChange={(e) => setParentName(e.target.value)} required />
+            <input type="email" placeholder="Parent Email" className="w-full p-2 border rounded" value={parentEmail} onChange={(e) => setParentEmail(e.target.value)} required />
+            <input type="tel" placeholder="Parent Phone" className="w-full p-2 border rounded" value={parentPhone} onChange={(e) => setParentPhone(e.target.value)} required />
+            <input type="text" placeholder="Parent Address" className="w-full p-2 border rounded" value={parentAddress} onChange={(e) => setParentAddress(e.target.value)} required />
+            <label htmlFor="">Image of Father</label>
+            <input type="file" className="w-full p-2 border rounded bg-white" onChange={(e) => setParentImage(e.target.files?.[0] || null)} accept="image/*" />
+            <label htmlFor="">Image of Mother</label>
+            <input type="file" className="w-full p-2 border rounded bg-white" onChange={(e) => setImageOfDad(e.target.files?.[0] || null)} accept="image/*" />
           </div>
         </section>
 
@@ -147,52 +138,26 @@ export default function Home() {
         <section>
           <h2 className="text-xl font-semibold mb-2 text-gray-800">Third Party Info</h2>
           <div className="space-y-3">
-            <input
-              type="text"
-              placeholder="Third Party Full Name"
-              className="w-full p-2 border rounded"
-              value={thirdPartyName}
-              onChange={(e) => setThirdPartyName(e.target.value)}
-            />
-            <input
-              type="tel"
-              placeholder="Third Party Phone"
-              className="w-full p-2 border rounded"
-              value={thirdPartyPhone}
-              onChange={(e) => setThirdPartyPhone(e.target.value)}
-            />
-            <input
-              type="file"
-              className="w-full p-2 border rounded bg-white"
-              onChange={(e) => setThirdPartyImage(e.target.files?.[0] || null)}
-              accept="image/*"
-            />
+            <input type="text" placeholder="Third Party Full Name" className="w-full p-2 border rounded" value={thirdPartyName} onChange={(e) => setThirdPartyName(e.target.value)} />
+            <input type="tel" placeholder="Third Party Phone" className="w-full p-2 border rounded" value={thirdPartyPhone} onChange={(e) => setThirdPartyPhone(e.target.value)} />
+            <input type="text" placeholder="Relationship to Parent" className="w-full p-2 border rounded" value={thirdPartyRelationship} onChange={(e) => setThirdPartyRelationship(e.target.value)} />
+            <label htmlFor="">Image of Guardian</label>
+            <input type="file" className="w-full p-2 border rounded bg-white" onChange={(e) => setThirdPartyImage(e.target.files?.[0] || null)} accept="image/*" />
           </div>
         </section>
 
-        {/* Children Section */}
+        {/* Children */}
         <section>
           <h3 className="text-xl font-semibold mb-2 text-gray-800">Children</h3>
           {children.map((child, index) => (
-            <ChildForm
-              key={index}
-              index={index}
-              child={child}
-              onChange={handleChildChange}
-              onRemove={handleChildRemove}
-            />
+            <ChildForm key={index} index={index} child={child} onChange={handleChildChange} onRemove={handleChildRemove} />
           ))}
-
-          <button
-            type="button"
-            onClick={addChild}
-            className="text-blue-600 hover:underline text-sm"
-          >
+          <button type="button" onClick={addChild} className="text-blue-600 hover:underline text-sm">
             + Add Another Child
           </button>
         </section>
 
-        {/* Submit Button */}
+        {/* Loading Modal */}
         {loading && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded shadow-lg">
@@ -201,12 +166,14 @@ export default function Home() {
           </div>
         )}
 
+        {/* Success Message */}
         {success && (
           <div className="mb-4 p-3 rounded text-green-700 bg-green-100 border border-green-300">
             Form submitted successfully!
           </div>
         )}
 
+        {/* Submit Button */}
         <button
           type="submit"
           disabled={loading}
