@@ -25,8 +25,8 @@ export default function Home() {
     },
   ]);
 
-  const [qrUrl, setQrUrl] = useState("");
-  const [viewLink, setViewLink] = useState("");
+  // const [qrUrl, setQrUrl] = useState("");
+  // const [viewLink, setViewLink] = useState("");
 
   const handleChildChange = (index: number, updated: Child) => {
     const newChildren = [...children];
@@ -166,7 +166,7 @@ export default function Home() {
           Submit
         </button>
       </form>
-      
+
       {/* 
       {qrUrl && (
         <div className="mt-6 text-center">

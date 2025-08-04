@@ -1,64 +1,65 @@
-interface Params {
-  params: {
-    id: string;
-  };
+"use client";
+import { use, useEffect, useState } from "react";
+import { FC } from "react";
+
+interface Child {
+  _id: string;
+  name: string;
+  class: string;
+  age: number;
+  schoolAttended: string;
+  bootcampCourse: string;
+  image: string;
 }
 
-// app/parents/[id]/page.tsx
-import Image from "next/image";
-
-interface Params {
-  params: {
-    id: string;
-  };
+interface Parent {
+  name: string;
+  phoneNumber: string;
+  image: string;
+  children: Child[];
 }
 
-export default async function ParentPage({ params }: Params) {
-  const res = await fetch(`https://summer-bootcamp-apis.onrender.com/api/parents/${params.id}`);
-  const data = await res.json();
-  const parent = data.parent;
+interface ParentResponse {
+  parent: Parent;
+}
+
+
+const ParentPage = ({ params }: { params: Promise<{ id: string }> }) => {
+    const { id } = use(params);
+  const [data, setParents] = useState<ParentResponse | null>(null);
+
+  useEffect(() => {
+    fetch(`https://summer-bootcamp-apis.onrender.com/api/parents/${id}`)
+      .then((res) => res.json())
+      .then((data) => setParents(data))
+      .catch((err) => console.error(err));
+  }, [id]);
+
+  if (!data) return <div>Loading...</div>;
 
   return (
-    <main className="max-w-3xl mx-auto p-6 space-y-8">
-      <section className="space-y-4">
-        <h1 className="text-2xl font-bold">Parent Information</h1>
-        <div className="flex items-center space-x-4">
-          <Image src={parent.image} alt="Parent" width={80} height={80} className="rounded-full" />
-          <div>
-            <p className="font-semibold">{parent.name}</p>
-            <p className="text-gray-600">{parent.phoneNumber}</p>
-          </div>
-        </div>
-      </section>
+    <div className="p-4">
+      <h1 className="text-xl font-bold">Parent: {data.parent.name}</h1>
+      <p>Phone: {data.parent.phoneNumber}</p>
+      <img src={data.parent.image} alt="Parent" className="w-32 h-32 object-cover mt-2" />
 
-      <section className="space-y-4">
-        <h2 className="text-xl font-bold">Authorized Third-Party</h2>
-        <div className="flex items-center space-x-4">
-          <Image src={parent.thirdpartyImage} alt="Third Party" width={80} height={80} className="rounded-full" />
-          <div>
-            <p className="font-semibold">{parent.thirdpartyName}</p>
-            <p className="text-gray-600">{parent.thirdpartyPhoneNumber}</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="space-y-4">
-        <h2 className="text-xl font-bold">Children</h2>
-        <div className="space-y-4">
-          {parent.children.map((child: any, index: number) => (
-            <div key={child._id} className="border rounded-lg p-4 flex space-x-4 items-center">
-              <Image src={child.image} alt={child.name} width={80} height={80} className="rounded-md" />
-              <div>
-                <p className="font-semibold">{child.name}</p>
-                <p>Class: {child.class}</p>
-                <p>Age: {child.age}</p>
-                <p>School: {child.schoolAttended}</p>
-                <p>Bootcamp Course: {child.bootcampCourse}</p>
-              </div>
+      <h2 className="mt-4 text-lg font-semibold">Children:</h2>
+      <ul className="space-y-4 mt-2">
+        {data.parent.children.map((child) => (
+          <li key={child._id} className="border p-2 rounded-md">
+            <img src={child.image} alt={child.name} className="w-24 h-24 object-cover mb-2" />
+            <div>
+              <p><strong>Name:</strong> {child.name}</p>
+              <p><strong>Class:</strong> {child.class}</p>
+              <p><strong>Age:</strong> {child.age}</p>
+              <p><strong>School:</strong> {child.schoolAttended}</p>
+              <p><strong>Course:</strong> {child.bootcampCourse}</p>
             </div>
-          ))}
-        </div>
-      </section>
-    </main>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
-}
+};
+
+export default ParentPage;

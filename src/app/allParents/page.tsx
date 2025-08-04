@@ -13,7 +13,7 @@ interface Child {
   age: number;
 }
 
-interface Parent {
+export interface Parent {
   _id: string;
   name: string;
   phoneNumber: string;
