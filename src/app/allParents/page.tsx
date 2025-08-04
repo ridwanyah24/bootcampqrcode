@@ -86,7 +86,7 @@ export default function Page() {
                 </ul>
               </td>
               <td className="border px-4 py-2 " >
-                <p className='underline text-blue-500 cursor-pointer ' onClick={()=>router.push(`/${parent?._id}`)}>{`localhost:3000/${parent?._id}`}</p>
+                <p className='underline text-blue-500 cursor-pointer ' onClick={()=>router.push(`/${parent?._id}`)}>{`https://bootcampqrcode.vercel.app/${parent?._id}`}</p>
             </td>
             </tr>
           ))}
