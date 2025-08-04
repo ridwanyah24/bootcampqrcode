@@ -14,6 +14,9 @@ export default function Home() {
   const [thirdPartyPhone, setThirdPartyPhone] = useState("");
   const [thirdPartyImage, setThirdPartyImage] = useState<File | null>(null);
 
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
   const [children, setChildren] = useState<Child[]>([
     {
       name: "",
@@ -56,6 +59,8 @@ export default function Home() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setSuccess(false);
 
     const formData = new FormData();
     formData.append("name", parentName);
@@ -83,102 +88,133 @@ export default function Home() {
       }
     });
 
-    const res = await fetch("https://summer-bootcamp-apis.onrender.com/api/parents", {
-      method: "POST",
-      body: formData,
-    });
+    try {
+      const res = await fetch("https://summer-bootcamp-apis.onrender.com/api/parents", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (res.ok) {
+        setSuccess(true);
+      }
+    } catch (error) {
+      console.error("Submission failed:", error);
+    } finally {
+      setLoading(false);
+    }
 
     for (const pair of formData.entries()) {
       console.log(pair[0], pair[1]);
     }
 
-    // const result = await res.json();
-    // setQrUrl(result.qr);
-    // setViewLink(result.viewUrl);
   };
 
   return (
-    <main className="max-w-2xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Bootcamp Registration</h1>
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <h2 className="text-lg font-semibold">Parent Info</h2>
-        <input
-          type="text"
-          placeholder="Parent Full Name"
-          className="block w-full my-2 p-2 border"
-          value={parentName}
-          onChange={(e) => setParentName(e.target.value)}
-          required
-        />
-        <input
-          type="tel"
-          placeholder="Parent Phone"
-          className="block w-full my-2 p-2 border"
-          value={parentPhone}
-          onChange={(e) => setParentPhone(e.target.value)}
-          required
-        />
-        <input
-          type="file"
-          className="block w-full my-2 p-2 border"
-          onChange={(e) => setParentImage(e.target.files?.[0] || null)}
-          accept="image/*"
-        />
+    <main className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md">
+      <h1 className="text-3xl font-bold mb-6 text-blue-700">Bootcamp Registration</h1>
 
-        <h2 className="text-lg font-semibold mt-4">Third Party Info</h2>
-        <input
-          type="text"
-          placeholder="Third Party Full Name"
-          className="block w-full my-2 p-2 border"
-          value={thirdPartyName}
-          onChange={(e) => setThirdPartyName(e.target.value)}
-        />
-        <input
-          type="tel"
-          placeholder="Third Party Phone"
-          className="block w-full my-2 p-2 border"
-          value={thirdPartyPhone}
-          onChange={(e) => setThirdPartyPhone(e.target.value)}
-        />
-        <input
-          type="file"
-          className="block w-full my-2 p-2 border"
-          onChange={(e) => setThirdPartyImage(e.target.files?.[0] || null)}
-          accept="image/*"
-        />
+      <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-6">
+        {/* Parent Info */}
+        <section>
+          <h2 className="text-xl font-semibold mb-2 text-gray-800">Parent Info</h2>
+          <div className="space-y-3">
+            <input
+              type="text"
+              placeholder="Parent Full Name"
+              className="w-full p-2 border rounded"
+              value={parentName}
+              onChange={(e) => setParentName(e.target.value)}
+              required
+            />
+            <input
+              type="tel"
+              placeholder="Parent Phone"
+              className="w-full p-2 border rounded"
+              value={parentPhone}
+              onChange={(e) => setParentPhone(e.target.value)}
+              required
+            />
+            <input
+              type="file"
+              className="w-full p-2 border rounded bg-white"
+              onChange={(e) => setParentImage(e.target.files?.[0] || null)}
+              accept="image/*"
+            />
+          </div>
+        </section>
 
-        <h3 className="text-lg font-semibold mt-6">Children</h3>
-        {children.map((child, index) => (
-          <ChildForm
-            key={index}
-            index={index}
-            child={child}
-            onChange={handleChildChange}
-            onRemove={handleChildRemove}
-          />
-        ))}
+        {/* Third Party Info */}
+        <section>
+          <h2 className="text-xl font-semibold mb-2 text-gray-800">Third Party Info</h2>
+          <div className="space-y-3">
+            <input
+              type="text"
+              placeholder="Third Party Full Name"
+              className="w-full p-2 border rounded"
+              value={thirdPartyName}
+              onChange={(e) => setThirdPartyName(e.target.value)}
+            />
+            <input
+              type="tel"
+              placeholder="Third Party Phone"
+              className="w-full p-2 border rounded"
+              value={thirdPartyPhone}
+              onChange={(e) => setThirdPartyPhone(e.target.value)}
+            />
+            <input
+              type="file"
+              className="w-full p-2 border rounded bg-white"
+              onChange={(e) => setThirdPartyImage(e.target.files?.[0] || null)}
+              accept="image/*"
+            />
+          </div>
+        </section>
 
-        <button type="button" onClick={addChild} className="mt-2 mb-6 text-blue-600">
-          + Add Another Child
-        </button>
+        {/* Children Section */}
+        <section>
+          <h3 className="text-xl font-semibold mb-2 text-gray-800">Children</h3>
+          {children.map((child, index) => (
+            <ChildForm
+              key={index}
+              index={index}
+              child={child}
+              onChange={handleChildChange}
+              onRemove={handleChildRemove}
+            />
+          ))}
 
-        <button type="submit" className="block w-full bg-blue-600 text-white p-2 rounded">
-          Submit
+          <button
+            type="button"
+            onClick={addChild}
+            className="text-blue-600 hover:underline text-sm"
+          >
+            + Add Another Child
+          </button>
+        </section>
+
+        {/* Submit Button */}
+        {loading && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded shadow-lg">
+              <p className="text-lg font-medium">Submitting...</p>
+            </div>
+          </div>
+        )}
+
+        {success && (
+          <div className="mb-4 p-3 rounded text-green-700 bg-green-100 border border-green-300">
+            Form submitted successfully!
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full ${loading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"} text-white font-medium py-2 px-4 rounded transition`}
+        >
+          {loading ? "Submitting..." : "Submit"}
         </button>
       </form>
-
-      {/* 
-      {qrUrl && (
-        <div className="mt-6 text-center">
-          <h3 className="text-lg font-semibold">Your QR Code</h3>
-          <img src={qrUrl} alt="QR Code" className="mx-auto mt-2" />
-          <a href={viewLink} target="_blank" className="text-blue-600 underline">
-            View Submission
-          </a>
-        </div>
-      )} */}
-      {/* <p className="underline tetx-blue" onClick={()=>router.push(`/${}`)}>go to link</p> */}
-
     </main>
   );
 }
