@@ -101,7 +101,7 @@ export default function EditParent({ params }: { params: Promise<{ id: string }>
     if (thirdPartyImage) formData.append("thirdpartyImage", thirdPartyImage);
 
     const childrenData = children.map((child) => ({
-      _id: child.id,
+      _id: child._id,
       name: child.name,
       class: child.class,
       schoolAttended: child.schoolAttended,
@@ -117,6 +117,15 @@ export default function EditParent({ params }: { params: Promise<{ id: string }>
         formData.append("childImages", child.image);
       }
     });
+
+    for (const [key, value] of formData.entries()) {
+      // If it's a File object, log its name
+      if (value instanceof File) {
+        console.log(`${key}: File -> ${value.name}`);
+      } else {
+        console.log(`${key}: ${value}`);
+      }
+    }
 
     try {
       const res = await fetch(
@@ -203,7 +212,7 @@ export default function EditParent({ params }: { params: Promise<{ id: string }>
                 setImageOfDad(e.target.files?.[0] || null)
               }
               accept="image/*"
-            />  
+            />
           </div>
         </section>
 
@@ -289,11 +298,10 @@ export default function EditParent({ params }: { params: Promise<{ id: string }>
         <button
           type="submit"
           disabled={loading}
-          className={`w-full ${
-            loading
+          className={`w-full ${loading
               ? "bg-blue-400 cursor-not-allowed"
               : "bg-blue-600 hover:bg-blue-700"
-          } text-white font-medium py-2 px-4 rounded transition`}
+            } text-white font-medium py-2 px-4 rounded transition`}
         >
           {loading ? "Updating..." : "Update"}
         </button>
