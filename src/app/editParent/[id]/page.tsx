@@ -32,18 +32,18 @@ export default function EditParent({ params }: { params: Promise<{ id: string }>
     fetch(`https://summer-bootcamp-apis.onrender.com/api/parents/${id}`)
       .then((res) => res.json())
       .then((data) => {
-        setParentName(data.name || "");
-        setParentPhone(data.phoneNumber || "");
-        setParentEmail(data.email || "");
-        setParentAddress(data.address || "");
-        setThirdPartyName(data.thirdpartyName || "");
-        setThirdPartyPhone(data.thirdpartyPhoneNumber || "");
-        setThirdPartyRelationship(data.thirdpartyRel || "");
+        setParentName(data.parent.name || "");
+        setParentPhone(data.parent.phoneNumber || "");
+        setParentEmail(data.parent.email || "");
+        setParentAddress(data.parent.address || "");
+        setThirdPartyName(data.parent.thirdpartyName || "");
+        setThirdPartyPhone(data.parent.thirdpartyPhoneNumber || "");
+        setThirdPartyRelationship(data.parent.thirdpartyRel || "");
         setChildren(
-          data.children?.map((child: any) => ({
+          data.parent.children?.map((child: any) => ({
             name: child.name || "",
             class: child.class || "",
-            image: null, // Images need re-upload to update
+            image: child?.image || null, // Images need re-upload to update
             schoolAttended: child.schoolAttended || "",
             bootcampCourse: child.bootcampCourse || "",
             age: child.age || "",
@@ -201,7 +201,7 @@ export default function EditParent({ params }: { params: Promise<{ id: string }>
                 setImageOfDad(e.target.files?.[0] || null)
               }
               accept="image/*"
-            />
+            />  
           </div>
         </section>
 
