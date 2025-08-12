@@ -1,4 +1,5 @@
 export interface Child {
+  id?: string;
   name: string;
   class: string;
   image: File | null;

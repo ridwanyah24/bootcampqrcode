@@ -41,6 +41,7 @@ export default function EditParent({ params }: { params: Promise<{ id: string }>
         setThirdPartyRelationship(data.parent.thirdpartyRel || "");
         setChildren(
           data.parent.children?.map((child: any) => ({
+            _id: child._id || "",
             name: child.name || "",
             class: child.class || "",
             image: child?.image || null, // Images need re-upload to update
@@ -100,6 +101,7 @@ export default function EditParent({ params }: { params: Promise<{ id: string }>
     if (thirdPartyImage) formData.append("thirdpartyImage", thirdPartyImage);
 
     const childrenData = children.map((child) => ({
+      _id: child.id,
       name: child.name,
       class: child.class,
       schoolAttended: child.schoolAttended,
