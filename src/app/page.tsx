@@ -117,7 +117,6 @@ export default function Home() {
   return (
     <main className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md">
       <h1 className="text-3xl font-bold mb-6 text-blue-700">Bootcamp Registration</h1>
-
       <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-6">
         {/* Parent Info */}
         <section>

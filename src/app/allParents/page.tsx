@@ -173,6 +173,12 @@ export default function Page() {
                                 >
                                     View Details
                                 </button>
+                                 <button
+                                    className="text-blue-600 underline hover:text-blue-800 transition"
+                                    onClick={() => router.push(`/editParent/${parent._id}`)}
+                                >
+                                    Edit Details
+                                </button>
                             </td>
                         </tr>
                     ))}
