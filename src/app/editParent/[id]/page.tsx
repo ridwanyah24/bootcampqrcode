@@ -127,7 +127,7 @@ export default function EditParent({ params }: { params: Promise<{ id: string }>
 
       if (res.ok) {
         setSuccess(true);
-        router.push("/parents"); // Go back to parent list after update
+        router.push("/allParents"); // Go back to parent list after update
       }
     } catch (error) {
       console.error("Update failed:", error);
